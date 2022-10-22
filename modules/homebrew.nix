@@ -756,6 +756,7 @@ in
 
     homebrew.brewfile =
       "# Created by `nix-darwin`'s `homebrew` module\n\n"
+      + optionalString (cfg.extraConfig != "") ("# Extra config\n" + cfg.extraConfig)
       + mkBrewfileSectionString "Taps" cfg.taps
       + mkBrewfileSectionString "Arguments for all casks"
         (optional (cfg.caskArgs.brewfileLine != null) cfg.caskArgs)
@@ -763,8 +764,7 @@ in
       + mkBrewfileSectionString "Casks" cfg.casks
       + mkBrewfileSectionString "Mac App Store apps"
         (mapAttrsToList (n: id: ''mas "${n}", id: ${toString id}'') cfg.masApps)
-      + mkBrewfileSectionString "Docker containers" (map (v: ''whalebrew "${v}"'') cfg.whalebrews)
-      + optionalString (cfg.extraConfig != "") ("# Extra config\n" + cfg.extraConfig);
+      + mkBrewfileSectionString "Docker containers" (map (v: ''whalebrew "${v}"'') cfg.whalebrews);
 
     environment.variables = mkIf cfg.enable cfg.global.homebrewEnvironmentVariables;
 
